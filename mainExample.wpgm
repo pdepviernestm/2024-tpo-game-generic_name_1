@@ -1,0 +1,38 @@
+import example.*
+import wollok.game.*
+
+program meteoricSpace{
+    game.title("nave")
+    game.height(25)
+    game.width(70)
+    game.boardGround("fondo4.jpg")
+
+    game.addVisual(nave)
+
+keyboard.right().onPressDo({
+    nave.position(nave.position().right(1))
+	
+})
+
+keyboard.left().onPressDo({
+    nave.position(nave.position().left(1))
+})
+
+keyboard.up().onPressDo({
+    nave.position(nave.position().up(1))
+})
+
+keyboard.down().onPressDo({
+    nave.position(nave.position().down(1))
+	
+})
+game.onTick(500,"disparo",{
+    const proyectil = new Bala()
+
+	game.addVisual(proyectil)
+	proyectil.position(proyectil.position().up(1))
+})
+    game.start()
+}
+
+//generar clase posicion
