@@ -8,25 +8,43 @@ object nave {
     position = newPos
   }
 
-  method image() = "nave.jpg"
+  method disparar() = new Bala()
 
-  method disparar(){
-    
-  }
+  method image() = "nave.png"
 }
 
 class Bala{
 
-  method image() = "bala.jpg"
+  method image() = "bala.png"
 
   var position = nave.position()
 
   method position() = position
+
   method position(newPos) {
     position = newPos
   }
-  method recorrido(){
 
-  
+}
+
+class Meteorito {
+  var position
+
+  method image() = "meteorito.png"
+
+  method position() = position
+
+  method position(newPos) {
+    position = newPos
   }
+
+}
+
+//La idea es que ESTE sea el fondo del juego.
+object fondo{
+  var position = game.at(35, 0)
+
+  method position() = position
+
+  method image() = "fondo.jpg"
 }

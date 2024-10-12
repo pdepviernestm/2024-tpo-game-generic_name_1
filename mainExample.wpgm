@@ -3,35 +3,61 @@ import wollok.game.*
 
 program meteoricSpace{
     game.title("nave")
-    game.height(25)
-    game.width(70)
-    game.boardGround("fondo4.jpg")
-
+    game.height(75)
+    game.width(170)
+    game.cellSize(25)
+    game.boardGround("fondo-gris.jpg")
+    
+    game.addVisual(fondo)
     game.addVisual(nave)
 
-keyboard.right().onPressDo({
-    nave.position(nave.position().right(1))
-	
-})
+    var balas = []
+    var meteoritos = []
 
-keyboard.left().onPressDo({
-    nave.position(nave.position().left(1))
-})
+    keyboard.right().onPressDo({
+        nave.position(nave.position().right(5))
+        
+    })
 
-keyboard.up().onPressDo({
-    nave.position(nave.position().up(1))
-})
+    keyboard.left().onPressDo({
+        nave.position(nave.position().left(5))
+    })
 
-keyboard.down().onPressDo({
-    nave.position(nave.position().down(1))
-	
-})
-game.onTick(500,"disparo",{
-    const proyectil = new Bala()
+    keyboard.up().onPressDo({
+        nave.position(nave.position().up(5))
+    })
 
-	game.addVisual(proyectil)
-	proyectil.position(proyectil.position().up(1))
-})
+    keyboard.down().onPressDo({
+        nave.position(nave.position().down(5))
+        
+    })
+
+    game.onTick(500, "Disparo",{
+        var bala = nave.disparar()
+        balas.add(bala)
+        game.addVisual(bala)
+    })
+
+    game.onTick(100, "Movimiento",{
+        balas.forEach({bala => bala.position(bala.position().up(5))})
+
+    })
+
+    game.onTick(2000, "Aparece Meteorito",{
+        const x = 0.randomUpTo(game.width()).truncate(0)
+        const y = 75
+        
+        const meteorito = new Meteorito(position = game.at(x, y))
+
+        meteoritos.add(meteorito)
+        game.addVisual(meteorito)
+    })
+
+    game.onTick(200, "Cae meteorito",{
+        meteoritos.forEach({meteorito => meteorito.position(meteorito.position().down(1))})
+    })
+
+
     game.start()
 }
 
