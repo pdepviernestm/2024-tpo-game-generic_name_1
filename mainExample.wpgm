@@ -1,26 +1,36 @@
 import example.*
 import wollok.game.*
 
-program meteoricSpace{
+program meteoricSpace {
     game.title("nave")
     game.height(75)
-    game.width(170)
+    game.width(175)
     game.cellSize(25)
     game.boardGround("fondo-gris.jpg")
-    
+
     game.addVisual(fondo)
     game.addVisual(nave)
 
     var balas = []
     var meteoritos = []
 
+    // Movimiento de la nave
     keyboard.right().onPressDo({
-        nave.position(nave.position().right(5))
-        
+        game.removeTickEvent("Movimiento izquierda")
+        game.onTick(100, "Movimiento derecha",{
+            if(nave.position().x() < fondo.limite_derecho()) {
+                nave.position(nave.position().right(1))
+            }
+        })
     })
 
     keyboard.left().onPressDo({
-        nave.position(nave.position().left(5))
+        game.removeTickEvent("Movimiento derecha")
+        game.onTick(100, "Movimiento izquierda",{
+            if(nave.position().x() > fondo.limite_izquierdo()) {
+                nave.position(nave.position().left(1))
+            }
+        })
     })
 
     keyboard.up().onPressDo({
@@ -29,22 +39,37 @@ program meteoricSpace{
 
     keyboard.down().onPressDo({
         nave.position(nave.position().down(5))
-        
     })
 
+    // Disparar
     game.onTick(500, "Disparo",{
         var bala = nave.disparar()
         balas.add(bala)
         game.addVisual(bala)
     })
 
-    game.onTick(100, "Movimiento",{
-        balas.forEach({bala => bala.position(bala.position().up(5))})
+    game.onTick(100, "Movimiento Balas",{
+        // Lista temporal para las balas que deben ser eliminadas
+        var balasABorrar = []
+        
+        balas.forEach({ bala => 
+            bala.position(bala.position().up(5))
 
+            if (bala.position().y() < 0) {
+                balasABorrar.add(bala)
+            }
+        })
+
+        // Borrar las balas fuera de pantalla
+        balasABorrar.forEach({ bala =>
+            balas.remove(bala)
+            game.removeVisual(bala)
+        })
     })
 
+    // Generar meteoritos
     game.onTick(2000, "Aparece Meteorito",{
-        const x = 0.randomUpTo(game.width()).truncate(0)
+        const x = fondo.limite_izquierdo().randomUpTo(fondo.limite_derecho()).truncate(0)
         const y = 75
         
         const meteorito = new Meteorito(position = game.at(x, y))
@@ -53,12 +78,25 @@ program meteoricSpace{
         game.addVisual(meteorito)
     })
 
-    game.onTick(200, "Cae meteorito",{
-        meteoritos.forEach({meteorito => meteorito.position(meteorito.position().down(1))})
-    })
+    // Movimiento de meteoritos
+    game.onTick(200, "Cae Meteorito",{
+        // Lista temporal para los meteoritos que deben ser eliminados
+        var meteoritosABorrar = []
+        
+        meteoritos.forEach({ meteorito => 
+            meteorito.position(meteorito.position().down(1))
 
+            if (meteorito.position().y() > game.height()) {
+                meteoritosABorrar.add(meteorito) // Marcar para borrar
+            }
+        })
+
+        // Borrar los meteoritos fuera de pantalla
+        meteoritosABorrar.forEach({ meteorito =>
+            meteoritos.remove(meteorito)
+            game.removeVisual(meteorito)
+        })
+    })
 
     game.start()
 }
-
-//generar clase posicion

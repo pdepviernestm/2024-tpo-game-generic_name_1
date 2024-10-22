@@ -44,6 +44,9 @@ class Meteorito {
 object fondo{
   var position = game.at(35, 0)
 
+  method limite_derecho() = 125
+  method limite_izquierdo() = 35
+
   method position() = position
 
   method image() = "fondo.jpg"
