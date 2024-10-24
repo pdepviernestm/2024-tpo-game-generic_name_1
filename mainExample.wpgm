@@ -16,38 +16,29 @@ program meteoricSpace {
 
     // Movimiento de la nave
     keyboard.right().onPressDo({
-        game.removeTickEvent("Movimiento izquierda")
-        game.onTick(100, "Movimiento derecha",{
             if(nave.position().x() < fondo.limite_derecho()) {
-                nave.position(nave.position().right(1))
+                nave.position(nave.position().right(5))
             }
-        })
     })
 
     keyboard.left().onPressDo({
-        game.removeTickEvent("Movimiento derecha")
-        game.onTick(100, "Movimiento izquierda",{
             if(nave.position().x() > fondo.limite_izquierdo()) {
-                nave.position(nave.position().left(1))
+                nave.position(nave.position().left(5))
             }
-        })
+        
     })
 
     keyboard.up().onPressDo({
-         game.removeTickEvent("Movimiento izquierda")
-        game.removeTickEvent("Movimiento derecha")
         nave.position(nave.position().up(5))
     })
 
     keyboard.down().onPressDo({
-         game.removeTickEvent("Movimiento izquierda")
-        game.removeTickEvent("Movimiento derecha")
         nave.position(nave.position().down(5))
     })
 
     // Disparar
-    game.onTick(500, "Disparo",{
-        var bala = nave.disparar()
+    keyboard.c().onPressDo({
+          var bala = nave.disparar()
         balas.add(bala)
         game.addVisual(bala)
     })
@@ -78,41 +69,55 @@ program meteoricSpace {
         const y = 75
         
         const meteorito = new Meteorito(position = game.at(x, y))
-
         meteoritos.add(meteorito)
         game.addVisual(meteorito)
     })
-
-    // Movimiento de meteoritos
-    game.onTick(200, "Cae Meteorito",{
-        // Lista temporal para los meteoritos que deben ser eliminados
-        var meteoritosABorrar = []
+    //METEORITOS ESPECIALES
+    /* 
+    game.onTick(2000, "Aparece Meteorito",{
+        const x = fondo.limite_izquierdo().randomUpTo(fondo.limite_derecho()).truncate(0)
+        const y = 75
         
-        meteoritos.forEach({ meteorito => 
-            meteorito.position(meteorito.position().down(1))
-
-            if (meteorito.position().y() < 0) {
-                meteoritosABorrar.add(meteorito) // Marcar para borrar
-            }
-        })
-
-        // Borrar los meteoritos fuera de pantalla
-        meteoritosABorrar.forEach({ meteorito =>
-            meteoritos.remove(meteorito)
-            game.removeVisual(meteorito)
-        })
+        const meteoritoDuro = new MeteoritoDuro(position = game.at(x, y))
+        meteoritos.add(meteoritoDuro)
+        game.addVisual(meteoritoDuro)
     })
-
+    
+     game.onTick(2000, "Aparece Meteorito",{
+        const x = fondo.limite_izquierdo().randomUpTo(fondo.limite_derecho()).truncate(0)
+        const y = 75
+        
+        const meteoritoVeloz = new MeteoritoVeloz(position = game.at(x, y))
+        meteoritos.add(meteoritoVeloz)
+        game.addVisual(meteoritoVeloz)
+        })
+        */
+    // Movimiento de meteoritos
+    game.onTick(200, "Cae Meteorito", {
+    var meteoritosABorrar = []
+    meteoritos.forEach({ meteorito => 
+        meteorito.mover()
+        if (meteorito.position().y() < 0) {
+            meteoritosABorrar.add(meteorito)
+        }
+    })
+    meteoritosABorrar.forEach({ meteorito =>
+        meteoritos.remove(meteorito)
+        game.removeVisual(meteorito)
+    })
+})
     game.onTick(50, "Verificar Colisiones", {
     // Listas temporales para las balas y meteoritos que deben ser eliminados
     var balasABorrar = []
     var meteoritosABorrar = []
-    
     balas.forEach({ bala => 
         meteoritos.forEach({ meteorito =>
             if (meteorito.colisionaCon(bala)) {
                 balasABorrar.add(bala)
+                meteorito.recibirDisparo()
+                if(meteorito.vida()<=0){
                 meteoritosABorrar.add(meteorito)
+                }
             }
         })
     })

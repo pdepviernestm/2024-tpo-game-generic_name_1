@@ -40,8 +40,9 @@ class Bala{
 }
 
 class Meteorito {
+  var vida = 1
   var position
-
+  method vida()= vida
   method image() = "meteorito.png"
 
   method position() = position
@@ -49,13 +50,37 @@ class Meteorito {
   method position(newPos) {
     position = newPos
   }
+
   method colisionaCon(bala) {
-        const rango = 2 //uso esto para añadirle "hitbox" a los meteoritos y que no se limite solo a la celda base
-        return (bala.position().x() >= position.x() - rango && bala.position().x() <= position.x() + rango) &&
-               (bala.position().y() >= position.y() - rango && bala.position().y() <= position.y() + rango)
-    }
+    const rango = 2 // Uso esto para añadirle "hitbox" a los meteoritos y que no se limite solo a la celda base
+    return (bala.position().x() >= position.x() - rango && bala.position().x() <= position.x() + rango) &&
+           (bala.position().y() >= position.y() - rango && bala.position().y() <= position.y() + rango)
+  }
+
+  method recibirDisparo() {
+    vida = vida - 1
+  }
+  method mover() {
+    position = position.down(1)
+  }
 }
 
+class MeteoritoDuro inherits Meteorito {
+  override method initialize() {
+    vida = 2
+  }
+  override method image() = "meteorito_duro1.png"
+}
+
+class MeteoritoVeloz inherits Meteorito {
+  var velocidad = 2 // Ajustar la velocidad según sea necesario
+
+  override method image() = "meteorito_veloz1.png"
+
+ override method mover() {
+    position = position.down(velocidad)
+  }
+}
 //La idea es que ESTE sea el fondo del juego.
 object fondo{
   var position = game.at(35, 0)
