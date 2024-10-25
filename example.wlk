@@ -66,9 +66,7 @@ class Meteorito {
 }
 
 class MeteoritoDuro inherits Meteorito {
-  override method initialize() {
-    vida = 2
-  }
+  
   override method image() = "meteorito_duro1.png"
 }
 
