@@ -105,6 +105,9 @@ program meteoricSpace {
         if (meteorito.position().y() < 0) {
             meteoritosABorrar.add(meteorito)
         }
+        else if(keyboard.v().onPressDo({Meteorito.moverLento()})){
+            game.onTick(3000, "desactiva la ralentizacion", {Meteorito.mover()})
+        }
     })
     meteoritosABorrar.forEach({ meteorito =>
         meteoritos.remove(meteorito)
