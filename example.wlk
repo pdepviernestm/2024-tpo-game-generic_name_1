@@ -69,6 +69,10 @@ class Meteorito {
   method mover() {
     position = position.down(velocidad)
   }
+
+  method moverLento() {
+    position = position.down(velocidad - 3)
+  }
 }
 
 
