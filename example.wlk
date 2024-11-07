@@ -1,7 +1,7 @@
 object nave {
   var vida = 1
   var position = game.at(40,2)
- var municion = 20
+ var municion = 200
   method position() = position
   method gastarMunicion(){municion-=1}
   method position(newPos) {
@@ -48,7 +48,7 @@ class Meteorito {
   var vida = 1
   var position
   var property image = "meteorito.png"
-  var velocidad = 4
+  var velocidad = 0
   method vida()= vida
 
   method position() = position
@@ -91,9 +91,9 @@ class Nivel {
     var nivel = 1
     var meteoritosEliminados = 0
     var meteoritosParaEliminacion = 10
-    var velocidadMeteoritos = 4
+    var velocidadMeteoritos = 1
 
-
+    method velocidadMeteoritos() = velocidadMeteoritos
     method incrementarNivel() {
         nivel += 1
         meteoritosEliminados = 0
@@ -101,17 +101,16 @@ class Nivel {
          velocidadMeteoritos += 1
     }
 
-    method verificarProgreso() {
-        if (meteoritosEliminados >= meteoritosParaEliminacion) {
-            self.incrementarNivel()
-        }
-    }
+    
 
     method eliminarMeteorito() {
         meteoritosEliminados += 1
-        self.verificarProgreso()
+        if (self.meteoritosRestantes() == 0) {
+            self.incrementarNivel()}
     }
 
     method nivelActual() = nivel
     method meteoritosRestantes() = meteoritosParaEliminacion - meteoritosEliminados
+    method generarMeteoritoDuro() = nivel >= 3
+    method generarMeteoritoVeloz() = nivel >= 4
 }
