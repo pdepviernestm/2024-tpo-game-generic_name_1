@@ -48,7 +48,7 @@ class Meteorito {
   var vida = 1
   var position
   var property image = "meteorito.png"
-  var velocidad =4
+  var velocidad = 4
   method vida()= vida
 
   method position() = position
@@ -69,10 +69,6 @@ class Meteorito {
   method mover() {
     position = position.down(velocidad)
   }
-
-  method moverLento() {
-    position = position.down(velocidad - 3)
-  }
 }
 
 
@@ -89,4 +85,33 @@ object fondo{
   method position() = position
 
   method image() = "fondo.jpg"
+}
+
+class Nivel {
+    var nivel = 1
+    var meteoritosEliminados = 0
+    var meteoritosParaEliminacion = 10
+    var velocidadMeteoritos = 4
+
+
+    method incrementarNivel() {
+        nivel += 1
+        meteoritosEliminados = 0
+        meteoritosParaEliminacion += 5
+         velocidadMeteoritos += 1
+    }
+
+    method verificarProgreso() {
+        if (meteoritosEliminados >= meteoritosParaEliminacion) {
+            self.incrementarNivel()
+        }
+    }
+
+    method eliminarMeteorito() {
+        meteoritosEliminados += 1
+        self.verificarProgreso()
+    }
+
+    method nivelActual() = nivel
+    method meteoritosRestantes() = meteoritosParaEliminacion - meteoritosEliminados
 }

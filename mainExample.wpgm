@@ -13,8 +13,7 @@ program meteoricSpace {
 
     var balas = []
     var meteoritos = []
-    var max_Meteoritos = 20
-    //method restar(){max_Meteoritos-=1}   implementar en la clase niveles
+    var nivel = new Nivel()
 
     // Movimiento de la nave
     keyboard.right().onPressDo({
@@ -61,7 +60,7 @@ program meteoricSpace {
         })
 
         // Borrar las balas fuera de pantalla
-        balasABorrar.forEach({ bala =>
+        balasABorrar.forEach({ bala =>  
             balas.remove(bala)
             game.removeVisual(bala)
         })
@@ -71,7 +70,7 @@ program meteoricSpace {
     game.onTick(100, "Aparece Meteorito",{
         const x = fondo.limite_izquierdo().randomUpTo(fondo.limite_derecho()).truncate(0)
         const y = 75
-        if (meteoritos.size()<max_Meteoritos){
+        if (meteoritos.size()< nivel.meteoritosRestantes()){
         const meteorito = new Meteorito(position = game.at(x, y))
         meteoritos.add(meteorito)
         game.addVisual(meteorito)}
@@ -81,7 +80,7 @@ program meteoricSpace {
     game.onTick(2000, "Aparece Meteorito",{
         const x = fondo.limite_izquierdo().randomUpTo(fondo.limite_derecho()).truncate(0)
         const y = 75
-        if (meteoritos.size()<max_Meteoritos){
+        if (meteoritos.size()<nivel.meteoritosRestantes()){
         const meteoritoDuro = new Meteorito(position = game.at(x, y),vida=2,image = "meteorito_duro1.png")
         meteoritos.add(meteoritoDuro)
         game.addVisual(meteoritoDuro)
@@ -91,7 +90,7 @@ program meteoricSpace {
      game.onTick(3000, "Aparece Meteorito",{
         const x = fondo.limite_izquierdo().randomUpTo(fondo.limite_derecho()).truncate(0)
         const y = 75
-        if (meteoritos.size()<max_Meteoritos){
+        if (meteoritos.size()<nivel.meteoritosRestantes()){
         const meteoritoVeloz = new Meteorito(position = game.at(x, y),velocidad=2,image="meteorito_veloz1.png")
         meteoritos.add(meteoritoVeloz)
         game.addVisual(meteoritoVeloz)}
@@ -104,9 +103,6 @@ program meteoricSpace {
         meteorito.mover()
         if (meteorito.position().y() < 0) {
             meteoritosABorrar.add(meteorito)
-        }
-        else if(keyboard.v().onPressDo({Meteorito.moverLento()})){
-            game.onTick(3000, "desactiva la ralentizacion", {Meteorito.mover()})
         }
     })
     meteoritosABorrar.forEach({ meteorito =>
@@ -126,7 +122,7 @@ program meteoricSpace {
                 meteorito.recibirDisparo()
                 if(meteorito.vida()<=0){
                 meteoritosABorrar.add(meteorito)
-                //max_Meteoritos.restar()
+                nivel.eliminarMeteorito()
                 }
             }
         })
@@ -151,6 +147,7 @@ program meteoricSpace {
         meteoritos.remove(meteorito)
         game.removeVisual(meteorito)
     })
+    
 })
 
     game.start()
