@@ -1,9 +1,10 @@
 object nave {
   var vida = 1
   var position = game.at(40,2)
- var municion = 200
+  var property municionesDisponibles = 12
+
   method position() = position
-  method gastarMunicion(){municion-=1}
+  method gastarMunicion(){municionesDisponibles-=1}
   method position(newPos) {
     position = newPos
   }
@@ -13,11 +14,20 @@ object nave {
         return (meteorito.position().x() >= position.x() - rango_X && meteorito.position().x() <= position.x() + rango_X+3) &&
                (meteorito.position().y() >= position.y() - rango_Y && meteorito.position().y() <= position.y() + rango_Y+2)
     }
+
+
   method disparar() {
-  if(municion>0){
-    self.gastarMunicion() 
-  return new Bala()}
-  else return }
+    if(municionesDisponibles>0){
+      self.gastarMunicion() 
+      return new Bala()
+      }
+      else return 
+    
+    }
+
+  method sumarMunicion(municionNueva){
+    municionesDisponibles += municionNueva
+  }
 
   method image() = "nave.png"
   method perderVida() {
@@ -72,33 +82,20 @@ class Meteorito {
 }
 
 
-//La idea es que ESTE sea el fondo del juego.
-object fondo{
-  var position = game.at(35, 0)
-
-  method limite_derecho() = 125
-  method limite_izquierdo() = 35
-  method limite_arriba() = 75
-  method limite_abajo() = 0
-
-
-  method position() = position
-
-  method image() = "fondo.jpg"
-}
 
 class Nivel {
     var nivel = 1
-    var meteoritosEliminados = 0
+    var property meteoritosEliminados = 0
     var meteoritosParaEliminacion = 10
     var velocidadMeteoritos = 1
+    var property balas_disponibles = 2*meteoritosParaEliminacion
 
     method velocidadMeteoritos() = velocidadMeteoritos
     method incrementarNivel() {
         nivel += 1
         meteoritosEliminados = 0
         meteoritosParaEliminacion += 5
-         velocidadMeteoritos += 1
+        velocidadMeteoritos += 1
     }
 
     
@@ -106,11 +103,53 @@ class Nivel {
     method eliminarMeteorito() {
         meteoritosEliminados += 1
         if (self.meteoritosRestantes() == 0) {
-            self.incrementarNivel()}
+            self.incrementarNivel()
+            self.cambiarFondo()
+            }
     }
+
 
     method nivelActual() = nivel
     method meteoritosRestantes() = meteoritosParaEliminacion - meteoritosEliminados
     method generarMeteoritoDuro() = nivel >= 3
     method generarMeteoritoVeloz() = nivel >= 4
+
+    method iniciar_nave(){
+      nave.municionesDisponibles(balas_disponibles)
+    }
+
+    //FONDO
+    var position = game.at(35, 0)
+
+    method limite_derecho() = 125
+    method limite_izquierdo() = 35
+    method limite_arriba() = 75
+    method limite_abajo() = 0
+
+
+    method position() = position
+
+    var property image = "fondo.jpg" 
+
+    method cambiarFondo(){
+      if(nivel ==2 ){
+        self.image("fondo-nivel-2.jpg")
+      }else if(nivel == 3){
+        self.image("fondo-nivel-3.jpg")
+      }else if(nivel == 4){
+        self.image("fondo-nivel-4.jpg")
+      }else if(nivel == 5){
+        self.image("fondo-nivel-5.jpg")
+      }
+    }
+}
+
+object sumar_minicion {
+  var property position = game.at(145, 50)
+  var property image = "municion_desactivada.png" 
+  const property balas_a_agregar = 10
+
+  method cambiarFondo(fondo){
+    image = fondo
+  }
 }

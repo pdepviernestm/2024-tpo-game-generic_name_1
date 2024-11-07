@@ -8,42 +8,55 @@ program meteoricSpace {
     game.cellSize(25)
     game.boardGround("fondo-gris.jpg")
 
-    game.addVisual(fondo)
-    game.addVisual(nave)
+    
 
     var balas = []
     var meteoritos = []
+    var balasDisparadas = 0
     var nivel = new Nivel()
+    
 
+    game.addVisual(nivel)
+    game.addVisual(nave)
+    game.addVisual(sumar_minicion)
+
+    nivel.iniciar_nave()
     // Movimiento de la nave
     keyboard.right().onPressDo({
-            if(nave.position().x() < fondo.limite_derecho()) {
+            if(nave.position().x() < nivel.limite_derecho()) {
                 nave.position(nave.position().right(5))
             }
     })
 
     keyboard.left().onPressDo({
-            if(nave.position().x() > fondo.limite_izquierdo()) {
+            if(nave.position().x() > nivel.limite_izquierdo()) {
                 nave.position(nave.position().left(5))
             }
         
     })
 
     keyboard.up().onPressDo({
-        if(nave.position().y() < fondo.limite_arriba())
+        if(nave.position().y() < nivel.limite_arriba())
         nave.position(nave.position().up(5))
     })
 
     keyboard.down().onPressDo({
-        if(nave.position().y() > fondo.limite_abajo())
+        if(nave.position().y() > nivel.limite_abajo())
         nave.position(nave.position().down(5))
     })
 
     // Disparar
     keyboard.c().onPressDo({
-          var bala = nave.disparar()
-        balas.add(bala)
-        game.addVisual(bala)
+        if(nave.municionesDisponibles() > 0){
+            var bala = nave.disparar()
+            balas.add(bala)
+            game.addVisual(bala)
+        }
+    })
+
+    keyboard.z().onPressDo({
+        nave.sumarMunicion(sumar_minicion.balas_a_agregar())
+        sumar_minicion.cambiarFondo("municion_desactivada.png")
     })
 
     game.onTick(100, "Movimiento Balas",{
@@ -68,7 +81,7 @@ program meteoricSpace {
 
     // Generar meteoritos
     game.onTick(1000, "Aparece Meteorito",{
-        const x = fondo.limite_izquierdo().randomUpTo(fondo.limite_derecho()).truncate(0)
+        const x = nivel.limite_izquierdo().randomUpTo(nivel.limite_derecho()).truncate(0)
         const y = 75
         if (meteoritos.size()< nivel.meteoritosRestantes()){
         const meteorito = new Meteorito(position = game.at(x, y), velocidad = nivel.velocidadMeteoritos())
@@ -79,7 +92,7 @@ program meteoricSpace {
     
     game.onTick(2000, "Aparece Meteorito",{
         if(nivel.generarMeteoritoDuro()){
-        const x = fondo.limite_izquierdo().randomUpTo(fondo.limite_derecho()).truncate(0)
+        const x = nivel.limite_izquierdo().randomUpTo(nivel.limite_derecho()).truncate(0)
         const y = 75
         if (meteoritos.size()<nivel.meteoritosRestantes()){
         const meteoritoDuro = new Meteorito(position = game.at(x, y),velocidad = nivel.velocidadMeteoritos(),vida=2,image = "meteorito_duro1.png")
@@ -90,7 +103,7 @@ program meteoricSpace {
        
      game.onTick(3000, "Aparece Meteorito",{
         if(nivel.generarMeteoritoVeloz()){
-        const x = fondo.limite_izquierdo().randomUpTo(fondo.limite_derecho()).truncate(0)
+        const x = nivel.limite_izquierdo().randomUpTo(nivel.limite_derecho()).truncate(0)
         const y = 75
         if (meteoritos.size()<nivel.meteoritosRestantes()){
         const meteoritoVeloz = new Meteorito(position = game.at(x, y),velocidad = nivel.velocidadMeteoritos()+2,image="meteorito_veloz1.png")
@@ -125,6 +138,11 @@ program meteoricSpace {
                 if(meteorito.vida()<=0){
                 meteoritosABorrar.add(meteorito)
                 nivel.eliminarMeteorito()
+                if(nivel.meteoritosEliminados() == 5){
+                    sumar_minicion.cambiarFondo("municion_activa.png")
+                    game.addVisual(sumar_minicion)
+                    
+                }
                 }
             }
         })
