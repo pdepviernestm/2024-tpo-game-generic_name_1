@@ -134,8 +134,14 @@ class Nivel {
       nave.municionesDisponibles(balas_disponibles)
     }
 
-    method reducirVelocidad() {
-      velocidadMeteoritos -=  2
+   method reducirVelocidad(duracion) {
+      tiempoRestante = duracion
+      if(tiempoRestante > 1){
+        velocidadMeteoritos -= 2 
+      }
+      else if(tiempoRestante <=1){ 
+        velocidadMeteoritos = 3
+      }
     }
 
     //FONDO
