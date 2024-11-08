@@ -1,6 +1,6 @@
 object nave {
   var  property vida = 1
-  var position = game.at(40,2)
+  var position = game.at(30,6)
   var property municionesDisponibles = 12
   var property image = "nave.png"
   method position() = position
@@ -17,12 +17,18 @@ object nave {
 
 
   method disparar() {
+    if(municionesDisponibles>0 && vida==2){
+      self.gastarMunicion() 
+      return new Bala(position= position.right(4))
+      }
+      else return
     if(municionesDisponibles>0){
       self.gastarMunicion() 
       return new Bala(position= position.right(3))
       }
       else return 
     
+
     }
 
   method sumarMunicion(municionNueva){
@@ -41,7 +47,7 @@ object nave {
     }
     method ponerEscudo(){
       vida=2
-      image="escudo_activado.png"
+      image="escudo_activado3.png"
 
     }
     method cambiarFondo(fondo){
@@ -133,11 +139,11 @@ class Nivel {
     }
 
     //FONDO
-    var position = game.at(35, 0)
+    var position = game.at(9, 0)
 
-    method limite_derecho() = 125
-    method limite_izquierdo() = 35
-    method limite_arriba() = 75
+    method limite_derecho() = 99
+    method limite_izquierdo() = 9
+    method limite_arriba() = 80
     method limite_abajo() = 0
 
 
@@ -159,7 +165,7 @@ class Nivel {
 }
 
 object sumar_minicion {
-  var property position = game.at(145, 50)
+  var property position = game.at(120, 51)
   var property image = "municion_sinMunicion.png" 
   const property balas_a_agregar = 10
 
@@ -168,7 +174,7 @@ object sumar_minicion {
   }
 }
 object poner_Escudo{
-  var property position = game.at(145,35)
+  var property position = game.at(120,29)
   var property image = "icono_escudo_no_disponible.png"  
   method cambiarFondo(fondo){
     image = fondo
@@ -176,8 +182,8 @@ object poner_Escudo{
 }
 
 object reducir_velocidad{
-  var property position = game.at(145, 45)
-  var property image = "imagen" 
+  var property position = game.at(120, 8)
+  var property image = "ralentizacion_desactivada1.png" 
   
   method cambiarFondo(fondo){
     image = fondo
