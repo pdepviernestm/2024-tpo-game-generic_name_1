@@ -4,9 +4,9 @@ import wollok.game.*
 program meteoricSpace {
     game.title("nave")
     game.height(75)
-    game.width(175)
+    game.width(150)
     game.cellSize(25)
-    game.boardGround("fondo-gris.jpg")
+    game.boardGround("fondofondo5.png")
 
     
 
@@ -66,6 +66,7 @@ program meteoricSpace {
 
     keyboard.v().onPressDo({
         nivel.reducirVelocidad()
+        reducir_velocidad.cambiarFondo("ralentizacion_desactivada1.png")
     })
 
     game.onTick(100, "Movimiento Balas",{
@@ -155,6 +156,11 @@ program meteoricSpace {
                 if(nivel.meteoritosEliminados() == 10){
                     poner_Escudo.cambiarFondo("icono_escudo_disponible.png")
                     game.addVisual(poner_Escudo)
+                    
+                }
+                if(nivel.meteoritosEliminados() == 15){
+                    reducir_velocidad.cambiarFondo("ralentizacion1.png")
+                    game.addVisual(reducir_velocidad)
                     
                 }
                 }
