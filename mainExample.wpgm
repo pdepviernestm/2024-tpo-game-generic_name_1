@@ -15,7 +15,7 @@ program meteoricSpace {
     var balasDisparadas = 0
     var nivel = new Nivel()
     
-
+    game.addVisual(reducir_velocidad)
     game.addVisual(nivel)
     game.addVisual(nave)
     game.addVisual(sumar_minicion)
@@ -62,8 +62,12 @@ program meteoricSpace {
     keyboard.x().onPressDo({
             nave.ponerEscudo()
             poner_Escudo.cambiarFondo("icono_escudo_no_disponible.png")
-
     })
+
+    keyboard.v().onPressDo({
+        nivel.reducirVelocidad()
+    })
+
     game.onTick(100, "Movimiento Balas",{
         // Lista temporal para las balas que deben ser eliminadas
         var balasABorrar = []
