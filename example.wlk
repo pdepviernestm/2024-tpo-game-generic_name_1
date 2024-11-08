@@ -41,7 +41,7 @@ object nave {
     }
     method ponerEscudo(){
       vida=2
-      image="pepe.png"
+      image="escudo_activado.png"
 
     }
     method cambiarFondo(fondo){
@@ -165,7 +165,7 @@ object sumar_minicion {
 }
 object poner_Escudo{
   var property position = game.at(145,35)
-  var property image = "icono0.png"  
+  var property image = "icono_escudo_no_disponible.png"  
   method cambiarFondo(fondo){
     image = fondo
   }

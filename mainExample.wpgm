@@ -61,7 +61,7 @@ program meteoricSpace {
     })
     keyboard.x().onPressDo({
             nave.ponerEscudo()
-            poner_Escudo.cambiarFondo("icono0.png")
+            poner_Escudo.cambiarFondo("icono_escudo_no_disponible.png")
 
     })
     game.onTick(100, "Movimiento Balas",{
@@ -100,7 +100,7 @@ program meteoricSpace {
         const x = nivel.limite_izquierdo().randomUpTo(nivel.limite_derecho()).truncate(0)
         const y = 75
         if (meteoritos.size()<nivel.meteoritosRestantes()){
-        const meteoritoDuro = new Meteorito(position = game.at(x, y),velocidad = nivel.velocidadMeteoritos(),vida=2,image = "meteorito_duro1.png")
+        const meteoritoDuro = new Meteorito(position = game.at(x, y),velocidad = nivel.velocidadMeteoritos(),vida=2,image = "meteorito_duro.png")
         meteoritos.add(meteoritoDuro)
         game.addVisual(meteoritoDuro)
         }}
@@ -111,7 +111,7 @@ program meteoricSpace {
         const x = nivel.limite_izquierdo().randomUpTo(nivel.limite_derecho()).truncate(0)
         const y = 75
         if (meteoritos.size()<nivel.meteoritosRestantes()){
-        const meteoritoVeloz = new Meteorito(position = game.at(x, y),velocidad = nivel.velocidadMeteoritos()+2,image="meteorito_veloz1.png")
+        const meteoritoVeloz = new Meteorito(position = game.at(x, y),velocidad = nivel.velocidadMeteoritos()+2,image="meteorito_veloz.png")
         meteoritos.add(meteoritoVeloz)
         game.addVisual(meteoritoVeloz)}}
         })
@@ -149,7 +149,7 @@ program meteoricSpace {
                     
                 }
                 if(nivel.meteoritosEliminados() == 10){
-                    poner_Escudo.cambiarFondo("incono1.png")
+                    poner_Escudo.cambiarFondo("icono_escudo_disponible.png")
                     game.addVisual(poner_Escudo)
                     
                 }
