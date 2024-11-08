@@ -65,7 +65,7 @@ program meteoricSpace {
     })
 
     keyboard.v().onPressDo({
-        nivel.reducirVelocidad()
+        nivel.reducirVelocidad(5)
         reducir_velocidad.cambiarFondo("ralentizacion_desactivada1.png")
     })
 
@@ -150,6 +150,7 @@ program meteoricSpace {
                 nivel.eliminarMeteorito()
                 if(nivel.meteoritosEliminados() == 5){
                     sumar_minicion.cambiarFondo("municion_activada.png")
+                    nivel.reducirVelocidad(0)
                     game.addVisual(sumar_minicion)
                     
                 }
