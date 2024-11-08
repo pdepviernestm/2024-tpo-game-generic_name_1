@@ -19,6 +19,7 @@ program meteoricSpace {
     game.addVisual(nivel)
     game.addVisual(nave)
     game.addVisual(sumar_minicion)
+    game.addVisual(poner_Escudo)
 
     nivel.iniciar_nave()
     // Movimiento de la nave
@@ -56,9 +57,13 @@ program meteoricSpace {
 
     keyboard.z().onPressDo({
         nave.sumarMunicion(sumar_minicion.balas_a_agregar())
-        sumar_minicion.cambiarFondo("municion_desactivada.png")
+        sumar_minicion.cambiarFondo("municion_sinMunicion.png")
     })
+    keyboard.x().onPressDo({
+            nave.ponerEscudo()
+            poner_Escudo.cambiarFondo("icono0.png")
 
+    })
     game.onTick(100, "Movimiento Balas",{
         // Lista temporal para las balas que deben ser eliminadas
         var balasABorrar = []
@@ -139,8 +144,13 @@ program meteoricSpace {
                 meteoritosABorrar.add(meteorito)
                 nivel.eliminarMeteorito()
                 if(nivel.meteoritosEliminados() == 5){
-                    sumar_minicion.cambiarFondo("municion_activa.png")
+                    sumar_minicion.cambiarFondo("municion_activada.png")
                     game.addVisual(sumar_minicion)
+                    
+                }
+                if(nivel.meteoritosEliminados() == 10){
+                    poner_Escudo.cambiarFondo("incono1.png")
+                    game.addVisual(poner_Escudo)
                     
                 }
                 }

@@ -1,8 +1,8 @@
 object nave {
-  var vida = 1
+  var  property vida = 1
   var position = game.at(40,2)
   var property municionesDisponibles = 12
-
+  var property image = "nave.png"
   method position() = position
   method gastarMunicion(){municionesDisponibles-=1}
   method position(newPos) {
@@ -10,7 +10,7 @@ object nave {
   }
   method colisionaCon(meteorito) {
         const rango_X = 4
-        const rango_Y = 6 // Ajusta este valor según el tamaño deseado de la hitbox
+        const rango_Y = 4 // Ajusta este valor según el tamaño deseado de la hitbox
         return (meteorito.position().x() >= position.x() - rango_X && meteorito.position().x() <= position.x() + rango_X+3) &&
                (meteorito.position().y() >= position.y() - rango_Y && meteorito.position().y() <= position.y() + rango_Y+2)
     }
@@ -19,7 +19,7 @@ object nave {
   method disparar() {
     if(municionesDisponibles>0){
       self.gastarMunicion() 
-      return new Bala()
+      return new Bala(position= position.right(3))
       }
       else return 
     
@@ -29,22 +29,31 @@ object nave {
     municionesDisponibles += municionNueva
   }
 
-  method image() = "nave.png"
+
   method perderVida() {
         vida = vida - 1
+        image = "nave.png"
         if (vida <= 0) {
             game.stop()
             
             
         }
     }
-}
+    method ponerEscudo(){
+      vida=2
+      image="pepe.png"
 
+    }
+    method cambiarFondo(fondo){
+    image = fondo
+  }
+
+}
 class Bala{
 
   method image() = "bala.png"
 
-  var position = nave.position()
+  var position = 0
 
   method position() = position
 
@@ -68,7 +77,7 @@ class Meteorito {
   }
 
   method colisionaCon(bala) {
-    const rango = 6 // Uso esto para añadirle "hitbox" a los meteoritos y que no se limite solo a la celda base
+    const rango = 5 // Uso esto para añadirle "hitbox" a los meteoritos y que no se limite solo a la celda base
     return (bala.position().x() >= position.x() - rango && bala.position().x() <= position.x() + rango) &&
            (bala.position().y() >= position.y() - rango && bala.position().y() <= position.y() + rango)
   }
@@ -79,6 +88,7 @@ class Meteorito {
   method mover() {
     position = position.down(velocidad)
   }
+  
 }
 
 
@@ -146,9 +156,16 @@ class Nivel {
 
 object sumar_minicion {
   var property position = game.at(145, 50)
-  var property image = "municion_desactivada.png" 
+  var property image = "municion_sinMunicion.png" 
   const property balas_a_agregar = 10
 
+  method cambiarFondo(fondo){
+    image = fondo
+  }
+}
+object poner_Escudo{
+  var property position = game.at(145,35)
+  var property image = "icono0.png"  
   method cambiarFondo(fondo){
     image = fondo
   }
