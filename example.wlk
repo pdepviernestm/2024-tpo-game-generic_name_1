@@ -97,7 +97,7 @@ class Nivel {
     var nivel = 1
     var property meteoritosEliminados = 0
     var meteoritosParaEliminacion = 10
-    var velocidadMeteoritos = 1
+    var velocidadMeteoritos = 3
     var property balas_disponibles = 2*meteoritosParaEliminacion
 
     method velocidadMeteoritos() = velocidadMeteoritos
@@ -129,7 +129,7 @@ class Nivel {
     }
 
     method reducirVelocidad() {
-      velocidadMeteoritos -=  8
+      velocidadMeteoritos -=  2
     }
 
     //FONDO
