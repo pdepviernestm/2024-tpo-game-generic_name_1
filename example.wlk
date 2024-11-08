@@ -128,6 +128,10 @@ class Nivel {
       nave.municionesDisponibles(balas_disponibles)
     }
 
+    method reducirVelocidad() {
+      velocidadMeteoritos -=  8
+    }
+
     //FONDO
     var position = game.at(35, 0)
 
@@ -166,6 +170,15 @@ object sumar_minicion {
 object poner_Escudo{
   var property position = game.at(145,35)
   var property image = "icono_escudo_no_disponible.png"  
+  method cambiarFondo(fondo){
+    image = fondo
+  }
+}
+
+object reducir_velocidad{
+  var property position = game.at(145, 45)
+  var property image = "imagen" 
+  
   method cambiarFondo(fondo){
     image = fondo
   }
