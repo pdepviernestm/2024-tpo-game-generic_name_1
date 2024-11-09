@@ -102,6 +102,7 @@ class Meteorito {
 class Nivel {
     var nivel = 1
     var property meteoritosEliminados = 0
+    var tiempoRestante = 0
     var meteoritosParaEliminacion = 10
     var velocidadMeteoritos = 3
     var property balas_disponibles = 2*meteoritosParaEliminacion
