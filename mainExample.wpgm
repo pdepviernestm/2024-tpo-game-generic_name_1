@@ -22,6 +22,8 @@ program meteoricSpace {
     game.addVisual(poner_Escudo)
 
     nivel.iniciar_nave()
+
+    
     // Movimiento de la nave
     keyboard.right().onPressDo({
             if(nave.position().x() < nivel.limite_derecho()) {
@@ -56,17 +58,23 @@ program meteoricSpace {
     })
 
     keyboard.z().onPressDo({
+        if (nivel.contadorMunicion() >= 5) {
         nave.sumarMunicion(sumar_minicion.balas_a_agregar())
         sumar_minicion.cambiarFondo("municion_sinMunicion.png")
+        nivel.contadorMunicion(0)  }
     })
     keyboard.x().onPressDo({
+        if (nivel.contadorEscudo() >= 10) {
             nave.ponerEscudo()
             poner_Escudo.cambiarFondo("icono_escudo_no_disponible.png")
+            nivel.contadorEscudo(0) }
     })
 
     keyboard.v().onPressDo({
+        if (nivel.contadorVelocidad() >= 15) {
         nivel.reducirVelocidad(5)
         reducir_velocidad.cambiarFondo("ralentizacion_desactivada1.png")
+        nivel.contadorVelocidad(0) }
     })
 
     game.onTick(100, "Movimiento Balas",{
@@ -89,37 +97,39 @@ program meteoricSpace {
         })
     })
 
+
     // Generar meteoritos
     game.onTick(1000, "Aparece Meteorito",{
-        const x = nivel.limite_izquierdo().randomUpTo(nivel.limite_derecho()).truncate(0)
-        const y = 75
         if (meteoritos.size()< nivel.meteoritosRestantes()){
-        const meteorito = new Meteorito(position = game.at(x, y), velocidad = nivel.velocidadMeteoritos())
+        const meteorito = nivel.crearMeteorito("meteorito")
         meteoritos.add(meteorito)
         game.addVisual(meteorito)}
+
+        if (nivel.tiempoRestante() > 0) {
+        nivel.reducirTiempo(1)
+        if (nivel.tiempoRestante() == 0) {
+            nivel.aumentarVelocidad(2)
+        }
+    }
     })
     //METEORITOS ESPECIALES
     
     game.onTick(2000, "Aparece Meteorito",{
         if(nivel.generarMeteoritoDuro()){
-        const x = nivel.limite_izquierdo().randomUpTo(nivel.limite_derecho()).truncate(0)
-        const y = 75
-        if (meteoritos.size()<nivel.meteoritosRestantes()){
-        const meteoritoDuro = new Meteorito(position = game.at(x, y),velocidad = nivel.velocidadMeteoritos(),vida=2,image = "meteorito_duro.png")
-        meteoritos.add(meteoritoDuro)
-        game.addVisual(meteoritoDuro)
-        }}
-    })
+        if (meteoritos.size()< nivel.meteoritosRestantes()){
+        const meteorito = nivel.crearMeteorito("duro")
+        meteoritos.add(meteorito)
+        game.addVisual(meteorito)}
+        }})
        
      game.onTick(3000, "Aparece Meteorito",{
         if(nivel.generarMeteoritoVeloz()){
-        const x = nivel.limite_izquierdo().randomUpTo(nivel.limite_derecho()).truncate(0)
-        const y = 75
-        if (meteoritos.size()<nivel.meteoritosRestantes()){
-        const meteoritoVeloz = new Meteorito(position = game.at(x, y),velocidad = nivel.velocidadMeteoritos()+2,image="meteorito_veloz.png")
-        meteoritos.add(meteoritoVeloz)
-        game.addVisual(meteoritoVeloz)}}
-        })
+        if (meteoritos.size()< nivel.meteoritosRestantes()){
+        const meteorito = nivel.crearMeteorito("veloz")
+        meteoritos.add(meteorito)
+        game.addVisual(meteorito)}
+        }}
+        )
         
     // Movimiento de meteoritos
     game.onTick(53, "Cae Meteorito", {
@@ -139,7 +149,7 @@ program meteoricSpace {
     game.onTick(12, "Verificar Colisiones", {
     // Listas temporales para las balas y meteoritos que deben ser eliminados
     var balasABorrar = []
-    var meteoritosABorrar = []
+    var meteoritosABorrar = []  
     balas.forEach({ bala => 
         meteoritos.forEach({ meteorito =>
             if (meteorito.colisionaCon(bala)) {
@@ -147,28 +157,24 @@ program meteoricSpace {
                 meteorito.recibirDisparo()
                 if(meteorito.vida()<=0){
                 meteoritosABorrar.add(meteorito)
-                nivel.eliminarMeteorito()
-                if(nivel.meteoritosEliminados() == 5){
+                nivel.eliminarMeteorito()}
+            }
+            if (nivel.contadorMunicion() == 5) {
                     sumar_minicion.cambiarFondo("municion_activada.png")
-                    nivel.reducirVelocidad(0)
                     game.addVisual(sumar_minicion)
-                    
-                }
-                if(nivel.meteoritosEliminados() == 10){
+                            }
+    if (nivel.contadorEscudo() == 10) {
                     poner_Escudo.cambiarFondo("icono_escudo_disponible.png")
                     game.addVisual(poner_Escudo)
-                    
-                }
-                if(nivel.meteoritosEliminados() == 15){
+                            }
+    if (nivel.contadorVelocidad() == 15) {
                     reducir_velocidad.cambiarFondo("ralentizacion1.png")
                     game.addVisual(reducir_velocidad)
-                    
+                            
                 }
-                }
-            }
         })
     })
-
+     
     // Verificar colisiones entre meteoritos y la nave
     meteoritos.forEach({ meteorito =>
         if (nave.colisionaCon(meteorito)) {

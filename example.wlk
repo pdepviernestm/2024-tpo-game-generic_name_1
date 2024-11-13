@@ -1,3 +1,17 @@
+class ObjetoJuego {
+    var position
+    var property image
+
+    method position() = position
+    method position(newPos) {
+        position = newPos
+    }
+    method image() = image
+    method image(newImage) {
+        image = newImage
+    }
+}
+
 object nave {
   var  property vida = 1
   var position = game.at(30,6)
@@ -55,33 +69,13 @@ object nave {
   }
 
 }
-class Bala{
-
-  method image() = "bala.png"
-
-  var position = 0
-
-  method position() = position
-
-  method position(newPos) {
-    position = newPos
-  }
-
+class Bala inherits ObjetoJuego(image = "bala.png"){
 }
 
-class Meteorito {
+class Meteorito inherits ObjetoJuego(image = "meteorito.png") {
   var vida = 1
-  var position
-  var property image = "meteorito.png"
   var velocidad = 0
   method vida()= vida
-
-  method position() = position
-
-  method position(newPos) {
-    position = newPos
-  }
-
   method colisionaCon(bala) {
     const rango = 5 // Uso esto para añadirle "hitbox" a los meteoritos y que no se limite solo a la celda base
     return (bala.position().x() >= position.x() - rango && bala.position().x() <= position.x() + rango) &&
@@ -102,12 +96,14 @@ class Meteorito {
 class Nivel {
     var nivel = 1
     var property meteoritosEliminados = 0
-    var tiempoRestante = 0
+    var property tiempoRestante = 0
     var meteoritosParaEliminacion = 10
-    var velocidadMeteoritos = 3
+    var property velocidadMeteoritos = 2
     var property balas_disponibles = 2*meteoritosParaEliminacion
-
-    method velocidadMeteoritos() = velocidadMeteoritos
+    var property contadorMunicion = 0
+    var property contadorEscudo = 0
+    var property contadorVelocidad = 0
+    
     method incrementarNivel() {
         nivel += 1
         meteoritosEliminados = 0
@@ -119,6 +115,9 @@ class Nivel {
 
     method eliminarMeteorito() {
         meteoritosEliminados += 1
+        contadorMunicion += 1
+        contadorEscudo += 1
+        contadorVelocidad += 1
         if (self.meteoritosRestantes() == 0) {
             self.incrementarNivel()
             self.cambiarFondo()
@@ -135,16 +134,18 @@ class Nivel {
       nave.municionesDisponibles(balas_disponibles)
     }
 
-   method reducirVelocidad(duracion) {
+    method reducirVelocidad(duracion) {
       tiempoRestante = duracion
-      if(tiempoRestante > 1){
-        velocidadMeteoritos -= 2 
-      }
-      else if(tiempoRestante <=1){ 
-        velocidadMeteoritos = 3
-      }
+      velocidadMeteoritos -= 2
+      
     }
+    method reducirTiempo(tiempo){
+    tiempoRestante-=tiempo
+  }
 
+    method aumentarVelocidad(aumento){
+      velocidadMeteoritos += aumento
+    }
     //FONDO
     var position = game.at(9, 0)
 
@@ -169,6 +170,25 @@ class Nivel {
         self.image("fondo-nivel-5.jpg")
       }
     }
+
+method crearMeteorito(tipo) {
+        const x = self.limite_izquierdo().randomUpTo(self.limite_derecho()).truncate(0)
+        const y = 75
+        var velocidadExtra = 0
+        var vida = 1
+         var imagen = tipo + ".png"
+
+        if (tipo == "duro") {
+            vida = 2
+        } else if (tipo == "veloz") {
+            velocidadExtra = 2
+        }
+        const meteorito = new Meteorito(position = game.at(x, y), velocidad = self.velocidadMeteoritos() + velocidadExtra, vida = vida, image = imagen)
+        return meteorito
+    }
+    
+
+
 }
 
 object sumar_minicion {
@@ -195,4 +215,15 @@ object reducir_velocidad{
   method cambiarFondo(fondo){
     image = fondo
   }
+
+
+  
 }
+
+
+
+
+
+
+
+
