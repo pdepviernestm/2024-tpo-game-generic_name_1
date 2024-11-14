@@ -6,7 +6,7 @@ program meteoricSpace {
     game.height(75)
     game.width(150)
     game.cellSize(25)
-    game.boardGround("fondofondo6.png")
+    game.boardGround("hud.png")
 
 var juegoIniciado = false
 var pantallaInicio = new ObjetoJuego(position = game.at(0, 0), image = "pantalla de inicio8.png")
@@ -36,25 +36,25 @@ var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantal
     
     // Movimiento de la nave
     keyboard.right().onPressDo({
-            if(nave.position().x() < nivel.limite_derecho()) {
+            if(nave.position().x() < fondo.limite_derecho()) {
                 nave.position(nave.position().right(5))
             }
     })
 
     keyboard.left().onPressDo({
-            if(nave.position().x() > nivel.limite_izquierdo()) {
+            if(nave.position().x() > fondo.limite_izquierdo()) {
                 nave.position(nave.position().left(5))
             }
         
     })
 
     keyboard.up().onPressDo({
-        if(nave.position().y() < nivel.limite_arriba())
+        if(nave.position().y() < fondo.limite_arriba())
         nave.position(nave.position().up(5))
     })
 
     keyboard.down().onPressDo({
-        if(nave.position().y() > nivel.limite_abajo())
+        if(nave.position().y() > fondo.limite_abajo())
         nave.position(nave.position().down(5))
     })
 
@@ -83,7 +83,7 @@ var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantal
     keyboard.v().onPressDo({
         if (nivel.contadorVelocidad() >= 15) {
         nivel.reducirVelocidad(5)
-        reducir_velocidad.cambiarFondo("ralentizacion_desactivada1.png")
+        reducir_velocidad.cambiarFondo("ralentizacion_desactivada.png")
         nivel.contadorVelocidad(0) }
     })
 
@@ -121,25 +121,28 @@ var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantal
             nivel.aumentarVelocidad(2)
         }
     }
-    })
-    //METEORITOS ESPECIALES
-    
-    game.onTick(2000, "Aparece Meteorito",{
+
+        
+        game.onTick(2000, "Aparece Meteorito",{  
         if(nivel.generarMeteoritoDuro()){
         if (meteoritos.size()< nivel.meteoritosRestantes()){
         const meteorito = nivel.crearMeteorito("duro")
         meteoritos.add(meteorito)
         game.addVisual(meteorito)}
-        }})
-       
-     game.onTick(3000, "Aparece Meteorito",{
+    }})
+        game.onTick(3000, "Aparece Meteorito",{
         if(nivel.generarMeteoritoVeloz()){
         if (meteoritos.size()< nivel.meteoritosRestantes()){
         const meteorito = nivel.crearMeteorito("veloz")
         meteoritos.add(meteorito)
         game.addVisual(meteorito)}
-        }}
-        )
+        }})
+
+
+
+    })
+    //METEORITOS ESPECIALES
+
         
     // Movimiento de meteoritos
     game.onTick(53, "Cae Meteorito", {
@@ -154,6 +157,22 @@ var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantal
         meteoritos.remove(meteorito)
         game.removeVisual(meteorito)
     })
+     if (nivel.contadorMunicion() == 5) {
+                    sumar_minicion.cambiarFondo("municion_activa.png")
+                    game.removeVisual(sumar_minicion)
+                    game.addVisual(sumar_minicion)
+                            }
+            if (nivel.contadorEscudo() == 10) {
+                    poner_Escudo.cambiarFondo("icono_escudo_disponible1.png")
+                    game.removeVisual(poner_Escudo)
+                    game.addVisual(poner_Escudo)
+                            }
+            if (nivel.contadorVelocidad() == 15) {
+                    reducir_velocidad.cambiarFondo("ralentizacion.png")
+                    game.removeVisual(reducir_velocidad)
+                    game.addVisual(reducir_velocidad)
+                            
+                }
 })
 
     game.onTick(13, "Verificar Colisiones", {
@@ -169,22 +188,6 @@ var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantal
                 meteoritosABorrar.add(meteorito)
                 nivel.eliminarMeteorito()}
             }
-            if (nivel.contadorMunicion() == 5) {
-                    sumar_minicion.cambiarFondo("municion_activa1.png")
-                    game.removeVisual(sumar_minicion)
-                    game.addVisual(sumar_minicion)
-                            }
-            if (nivel.contadorEscudo() == 10) {
-                    poner_Escudo.cambiarFondo("icono_escudo_disponible.png")
-                    game.removeVisual(poner_Escudo)
-                    game.addVisual(poner_Escudo)
-                            }
-            if (nivel.contadorVelocidad() == 15) {
-                    reducir_velocidad.cambiarFondo("ralentizacion1.png")
-                    game.removeVisual(reducir_velocidad)
-                    game.addVisual(reducir_velocidad)
-                            
-                }
         })
     })
      

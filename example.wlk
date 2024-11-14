@@ -11,7 +11,7 @@ class ObjetoJuego {
         image = newImage
     }
 }
-class Entidades inherits ObjetoJuego{
+class EntidadesVivas inherits ObjetoJuego{
   var property vida = 0 
   var rango_X = 4
   var rango_Y = 4
@@ -22,7 +22,7 @@ class Entidades inherits ObjetoJuego{
                (otraEntidad.position().y() >= position.y() - rango_Y && otraEntidad.position().y() <= position.y() + rango_Y)
     }
 }
-class Nave inherits Entidades {
+class Nave inherits EntidadesVivas {
   var property municionesDisponibles = 12
 
   method gastarMunicion(){municionesDisponibles-=1}
@@ -51,20 +51,16 @@ class Nave inherits Entidades {
     }
   method ponerEscudo(){
       vida=2
-      image="escudo_activado3.png"
+      image="escudo_activado.png"
 
     }
-  method cambiarFondo(fondo){
-    image = fondo
-  }
 
 }
 class Bala inherits ObjetoJuego(image = "bala.png"){
 }
 
-class Meteorito inherits Entidades(image = "meteorito.png",rango_X=5,rango_Y=5) {
+class Meteorito inherits EntidadesVivas(image = "meteorito.png",rango_X=5,rango_Y=5) {
   var velocidad = 0
-
   method recibirDisparo() {
     vida = vida - 1
   }
@@ -76,8 +72,8 @@ class Meteorito inherits Entidades(image = "meteorito.png",rango_X=5,rango_Y=5) 
 
 
 
-class Nivel {
-    var nivel = 1
+class Nivel inherits ObjetoJuego(image= "fondo.jpg", position=game.at(9, 0)) {
+    var  nivel = 1
     var property meteoritosEliminados = 0
     var property tiempoRestante = 0
     var meteoritosParaEliminacion = 10
@@ -86,12 +82,12 @@ class Nivel {
     var property contadorMunicion = 0
     var property contadorEscudo = 0
     var property contadorVelocidad = 0
-    
     method incrementarNivel() {
         nivel += 1
         meteoritosEliminados = 0
         meteoritosParaEliminacion += 5
         velocidadMeteoritos += 1
+        return nivel
     }
 
     
@@ -103,7 +99,7 @@ class Nivel {
         contadorVelocidad += 1
         if (self.meteoritosRestantes() == 0) {
             self.incrementarNivel()
-            self.cambiarFondo()
+            image= fondo.cambiarFondo(self.nivelActual())
             }
     }
 
@@ -114,7 +110,7 @@ class Nivel {
     method generarMeteoritoVeloz() = nivel >= 4
 
     method iniciar_nave(){
-      const nave = new Nave(vida=1,position=game.at(30,6),image="nave.png",rango_X=4,rango_Y=4,ajuste_X=3,ajuste_Y=2,municionesDisponibles=balas_disponibles)
+      const nave = new Nave(vida=1,position=game.at(30,6),image="nave.png",rango_X=3,rango_Y=3,ajuste_X=2,ajuste_Y=1,municionesDisponibles=balas_disponibles)
       return nave
     }
 
@@ -130,27 +126,10 @@ class Nivel {
     method aumentarVelocidad(aumento){
       velocidadMeteoritos += aumento
     }
-    //FONDO
-    var position = game.at(9, 0)
 
-    method limite_derecho() = 99
-    method limite_izquierdo() = 9
-    method limite_arriba() = 80
-    method limite_abajo() = 0
-
-
-    method position() = position
-
-    var property image = "fondo.jpg" 
-
-    method cambiarFondo() {
-    if (nivel >= 2 && nivel <= 5) {
-        self.image("fondo-nivel-" + nivel + ".jpg")
-    }
-    }
 
 method crearMeteorito(tipo) {
-        const x = self.limite_izquierdo().randomUpTo(self.limite_derecho()).truncate(0)
+        const x = fondo.limite_izquierdo().randomUpTo(fondo.limite_derecho()).truncate(0)
         const y = 75
         var velocidadExtra = 0
         var vida = 1
@@ -168,7 +147,18 @@ method crearMeteorito(tipo) {
 
 
 }
-
+object fondo{
+    var property image ="fondo.jpg"
+    method limite_derecho() = 99
+    method limite_izquierdo() = 9
+    method limite_arriba() = 80
+    method limite_abajo() = 0
+  method cambiarFondo(nivel) {
+    if (nivel >= 2 && nivel <= 5) {
+        self.image("fondo-nivel-" + nivel + ".jpg")
+        return self.image()
+    }else return 1
+    }}
 object sumar_minicion {
   var property position = game.at(120, 51)
   var property image = "municion_sinMunicion.png" 
@@ -188,7 +178,7 @@ object poner_Escudo{
 
 object reducir_velocidad{
   var property position = game.at(120, 8)
-  var property image = "ralentizacion_desactivada1.png" 
+  var property image = "ralentizacion_desactivada.png" 
   
   method cambiarFondo(fondo){
     image = fondo
