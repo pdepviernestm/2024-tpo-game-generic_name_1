@@ -120,7 +120,7 @@ var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantal
         if (nivel.tiempoRestante() == 0) {
             nivel.aumentarVelocidad(2)
         }
-    }
+    }})
 
         
         game.onTick(2000, "Aparece Meteorito",{  
@@ -140,7 +140,7 @@ var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantal
 
 
 
-    })
+    
     //METEORITOS ESPECIALES
 
         
