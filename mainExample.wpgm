@@ -197,6 +197,9 @@ var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantal
             meteoritosABorrar.add(meteorito)
             nave.perderVida()
             if (nave.vida() <= 0) {
+                game.removeVisual(sumar_minicion)
+                game.removeVisual(poner_Escudo)
+                game.removeVisual(reducir_velocidad)
         game.addVisual(pantallaGameOver)
         game.stop()
     }

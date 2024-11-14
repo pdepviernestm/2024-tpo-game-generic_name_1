@@ -86,7 +86,7 @@ class Nivel inherits ObjetoJuego(image= "fondo.jpg", position=game.at(9, 0)) {
         nivel += 1
         meteoritosEliminados = 0
         meteoritosParaEliminacion += 5
-        velocidadMeteoritos += 1
+        velocidadMeteoritos += 0.5
         return nivel
     }
 
