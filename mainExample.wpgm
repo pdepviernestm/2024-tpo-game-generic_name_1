@@ -6,23 +6,33 @@ program meteoricSpace {
     game.height(75)
     game.width(150)
     game.cellSize(25)
-    game.boardGround("fondofondo5.png")
+    game.boardGround("fondofondo6.png")
 
+var juegoIniciado = false
+var pantallaInicio = new ObjetoJuego(position = game.at(0, 0), image = "pantalla de inicio8.png")
+var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantalla de fin.png")
+    game.addVisual(pantallaInicio)
+
+    keyboard.enter().onPressDo({
+        if (!juegoIniciado) {
+            juegoIniciado = true
+            game.removeVisual(pantallaInicio)}
+            
     
-
+        
+        if (juegoIniciado){
     var balas = []
     var meteoritos = []
     var balasDisparadas = 0
     var nivel = new Nivel()
-    
+    var nave = nivel.iniciar_nave()
     game.addVisual(reducir_velocidad)
     game.addVisual(nivel)
     game.addVisual(nave)
     game.addVisual(sumar_minicion)
     game.addVisual(poner_Escudo)
-
-    nivel.iniciar_nave()
-
+    
+    
     
     // Movimiento de la nave
     keyboard.right().onPressDo({
@@ -146,7 +156,7 @@ program meteoricSpace {
     })
 })
 
-    game.onTick(12, "Verificar Colisiones", {
+    game.onTick(13, "Verificar Colisiones", {
     // Listas temporales para las balas y meteoritos que deben ser eliminados
     var balasABorrar = []
     var meteoritosABorrar = []  
@@ -160,15 +170,18 @@ program meteoricSpace {
                 nivel.eliminarMeteorito()}
             }
             if (nivel.contadorMunicion() == 5) {
-                    sumar_minicion.cambiarFondo("municion_activada.png")
+                    sumar_minicion.cambiarFondo("municion_activa1.png")
+                    game.removeVisual(sumar_minicion)
                     game.addVisual(sumar_minicion)
                             }
-    if (nivel.contadorEscudo() == 10) {
+            if (nivel.contadorEscudo() == 10) {
                     poner_Escudo.cambiarFondo("icono_escudo_disponible.png")
+                    game.removeVisual(poner_Escudo)
                     game.addVisual(poner_Escudo)
                             }
-    if (nivel.contadorVelocidad() == 15) {
+            if (nivel.contadorVelocidad() == 15) {
                     reducir_velocidad.cambiarFondo("ralentizacion1.png")
+                    game.removeVisual(reducir_velocidad)
                     game.addVisual(reducir_velocidad)
                             
                 }
@@ -180,6 +193,10 @@ program meteoricSpace {
         if (nave.colisionaCon(meteorito)) {
             meteoritosABorrar.add(meteorito)
             nave.perderVida()
+            if (nave.vida() <= 0) {
+        game.addVisual(pantallaGameOver)
+        game.stop()
+    }
             
         }
     })
@@ -197,5 +214,7 @@ program meteoricSpace {
     
 })
 
+    }
+    })
     game.start()
 }
