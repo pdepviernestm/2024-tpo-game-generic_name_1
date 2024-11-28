@@ -9,16 +9,32 @@ program meteoricSpace {
     game.boardGround("hud.png")
 
 var juegoIniciado = false
-var pantallaInicio = new ObjetoJuego(position = game.at(0, 0), image = "pantalla de inicio8.png")
+var pantallaInicio = new ObjetoJuego(position = game.at(0, 0), image = "inicio (6).png")
+var pantallaControls = new ObjetoJuego(position = game.at(0,0), image = "controles.png")
+var pantallaSettings = new ObjetoJuego(position = game.at(0,0), image = "")
 var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantalla de fin.png")
+var pantallaHowtoPlay = new ObjetoJuego(position = game.at(0,0), image = "howtoplay.png")
+var musica = game.sound("8bits.mp3")
     game.addVisual(pantallaInicio)
+    musica.play()
+    musica.volume(1)
+
+    //keyboard.s().onPressDo({ game.addVisual()})
+
+    keyboard.h().onPressDo({game.addVisual(pantallaHowtoPlay)})
+
+    keyboard.q().onPressDo({game.addVisual(pantallaControls)})
+
+    keyboard.backspace().onPressDo({ 
+        game.removeVisual(pantallaControls)
+        game.removeVisual(pantallaHowtoPlay)
+        game.removeVisual(pantallaControls)
+    })
 
     keyboard.enter().onPressDo({
         if (!juegoIniciado) {
             juegoIniciado = true
             game.removeVisual(pantallaInicio)}
-            
-    
         
         if (juegoIniciado){
     var balas = []
@@ -31,8 +47,6 @@ var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantal
     game.addVisual(nave)
     game.addVisual(sumar_minicion)
     game.addVisual(poner_Escudo)
-    
-    
     
     // Movimiento de la nave
     keyboard.right().onPressDo({
@@ -196,12 +210,14 @@ var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantal
         if (nave.colisionaCon(meteorito)) {
             meteoritosABorrar.add(meteorito)
             nave.perderVida()
+            game.addVisual(pantallaGameOver)
             if (nave.vida() <= 0) {
+                game.removeVisual(meteoritos)
                 game.removeVisual(sumar_minicion)
                 game.removeVisual(poner_Escudo)
                 game.removeVisual(reducir_velocidad)
-        game.addVisual(pantallaGameOver)
-        game.stop()
+                game.onTick(500, "", {game.stop()})
+                
     }
             
         }
