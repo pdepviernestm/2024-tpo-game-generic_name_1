@@ -18,8 +18,8 @@ class EntidadesVivas inherits ObjetoJuego{
   var ajuste_X=0
   var ajuste_Y=0
   method colisionaCon(otraEntidad) {
-        return (otraEntidad.position().x() >= position.x() - rango_X && otraEntidad.position().x() <= position.x() + rango_X) &&
-               (otraEntidad.position().y() >= position.y() - rango_Y && otraEntidad.position().y() <= position.y() + rango_Y)
+        return (otraEntidad.position().x() >= position.x() - rango_X && otraEntidad.position().x() <= position.x() + rango_X + ajuste_X) &&
+               (otraEntidad.position().y() >= position.y() - rango_Y && otraEntidad.position().y() <= position.y() + rango_Y + ajuste_Y)
     }
 }
 class Nave inherits EntidadesVivas {
@@ -59,7 +59,7 @@ class Nave inherits EntidadesVivas {
 class Bala inherits ObjetoJuego(image = "bala.png"){
 }
 
-class Meteorito inherits EntidadesVivas(image = "meteorito.png",rango_X=5,rango_Y=5) {
+class Meteorito inherits EntidadesVivas(image = "meteorito.png",rango_X=3,rango_Y=5,ajuste_X=1) {
   var velocidad = 0
   method recibirDisparo() {
     vida = vida - 1
@@ -110,7 +110,7 @@ class Nivel inherits ObjetoJuego(image= "fondo.jpg", position=game.at(9, 0)) {
     method generarMeteoritoVeloz() = nivel >= 4
 
     method iniciar_nave(){
-      const nave = new Nave(vida=1,position=game.at(30,6),image="nave.png",rango_X=3,rango_Y=3,ajuste_X=2,ajuste_Y=1,municionesDisponibles=balas_disponibles)
+      const nave = new Nave(vida=1,position=game.at(30,6),image="nave.png",rango_X=3,rango_Y=3,ajuste_X=5,ajuste_Y=1,municionesDisponibles=balas_disponibles)
       return nave
     }
 

@@ -33,9 +33,12 @@ var musica = game.sound("8bits.mp3")
 
     keyboard.enter().onPressDo({
         if (!juegoIniciado) {
+            game.removeVisual(pantallaControls)
+            game.removeVisual(pantallaHowtoPlay)
+            game.removeVisual(pantallaControls)
             juegoIniciado = true
             game.removeVisual(pantallaInicio)}
-        
+            
         if (juegoIniciado){
     var balas = []
     var meteoritos = []
@@ -210,13 +213,14 @@ var musica = game.sound("8bits.mp3")
         if (nave.colisionaCon(meteorito)) {
             meteoritosABorrar.add(meteorito)
             nave.perderVida()
-            game.addVisual(pantallaGameOver)
+
             if (nave.vida() <= 0) {
                 game.removeVisual(meteoritos)
                 game.removeVisual(sumar_minicion)
                 game.removeVisual(poner_Escudo)
                 game.removeVisual(reducir_velocidad)
-                game.onTick(500, "", {game.stop()})
+                game.addVisual(pantallaGameOver)
+                game.stop()
                 
     }
             
