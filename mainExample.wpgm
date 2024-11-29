@@ -1,0 +1,246 @@
+import example.*
+import wollok.game.*
+
+program meteoricSpace {
+    game.title("nave")
+    game.height(75)
+    game.width(150)
+    game.cellSize(25)
+    game.boardGround("hud.png")
+
+var juegoIniciado = false
+var pantallaInicio = new ObjetoJuego(position = game.at(0, 0), image = "inicio (6).png")
+var pantallaControls = new ObjetoJuego(position = game.at(0,0), image = "controles.png")
+var pantallaSettings = new ObjetoJuego(position = game.at(0,0), image = "")
+var pantallaGameOver = new ObjetoJuego(position = game.at(0, 0), image = "pantalla de fin.png")
+var pantallaHowtoPlay = new ObjetoJuego(position = game.at(0,0), image = "howtoplay.png")
+var musica = game.sound("8bits.mp3")
+    game.addVisual(pantallaInicio)
+    musica.play()
+    musica.volume(1)
+
+    //keyboard.s().onPressDo({ game.addVisual()})
+
+    keyboard.h().onPressDo({game.addVisual(pantallaHowtoPlay)})
+
+    keyboard.q().onPressDo({game.addVisual(pantallaControls)})
+
+    keyboard.backspace().onPressDo({ 
+        game.removeVisual(pantallaControls)
+        game.removeVisual(pantallaHowtoPlay)
+        game.removeVisual(pantallaControls)
+    })
+
+    keyboard.enter().onPressDo({
+        if (!juegoIniciado) {
+            game.removeVisual(pantallaControls)
+            game.removeVisual(pantallaHowtoPlay)
+            game.removeVisual(pantallaControls)
+            juegoIniciado = true
+            game.removeVisual(pantallaInicio)}
+            
+        if (juegoIniciado){
+    var balas = []
+    var meteoritos = []
+    var balasDisparadas = 0
+    var nivel = new Nivel()
+    var nave = nivel.iniciar_nave()
+    game.addVisual(reducir_velocidad)
+    game.addVisual(nivel)
+    game.addVisual(nave)
+    game.addVisual(sumar_minicion)
+    game.addVisual(poner_Escudo)
+    
+    // Movimiento de la nave
+    keyboard.right().onPressDo({
+            if(nave.position().x() < fondo.limite_derecho()) {
+                nave.position(nave.position().right(5))
+            }
+    })
+
+    keyboard.left().onPressDo({
+            if(nave.position().x() > fondo.limite_izquierdo()) {
+                nave.position(nave.position().left(5))
+            }
+        
+    })
+
+    keyboard.up().onPressDo({
+        if(nave.position().y() < fondo.limite_arriba())
+        nave.position(nave.position().up(5))
+    })
+
+    keyboard.down().onPressDo({
+        if(nave.position().y() > fondo.limite_abajo())
+        nave.position(nave.position().down(5))
+    })
+
+    // Disparar
+    keyboard.c().onPressDo({
+        if(nave.municionesDisponibles() > 0){
+            var bala = nave.disparar()
+            balas.add(bala)
+            game.addVisual(bala)
+        }
+    })
+
+    keyboard.z().onPressDo({
+        if (nivel.contadorMunicion() >= 5) {
+        nave.sumarMunicion(sumar_minicion.balas_a_agregar())
+        sumar_minicion.cambiarFondo("municion_sinMunicion.png")
+        nivel.contadorMunicion(0)  }
+    })
+    keyboard.x().onPressDo({
+        if (nivel.contadorEscudo() >= 10) {
+            nave.ponerEscudo()
+            poner_Escudo.cambiarFondo("icono_escudo_no_disponible.png")
+            nivel.contadorEscudo(0) }
+    })
+
+    keyboard.v().onPressDo({
+        if (nivel.contadorVelocidad() >= 15) {
+        nivel.reducirVelocidad(5)
+        reducir_velocidad.cambiarFondo("ralentizacion_desactivada.png")
+        nivel.contadorVelocidad(0) }
+    })
+
+    game.onTick(100, "Movimiento Balas",{
+        // Lista temporal para las balas que deben ser eliminadas
+        var balasABorrar = []
+        var meteoritosABorrar = []
+        
+        balas.forEach({ bala => 
+            bala.position(bala.position().up(5))
+
+            if (bala.position().y() > game.height()) {
+                balasABorrar.add(bala)
+            }
+        })
+
+        // Borrar las balas fuera de pantalla
+        balasABorrar.forEach({ bala =>  
+            balas.remove(bala)
+            game.removeVisual(bala)
+        })
+    })
+
+
+    // Generar meteoritos
+    game.onTick(1000, "Aparece Meteorito",{
+        if (meteoritos.size()< nivel.meteoritosRestantes()){
+        const meteorito = nivel.crearMeteorito("meteorito")
+        meteoritos.add(meteorito)
+        game.addVisual(meteorito)}
+
+        if (nivel.tiempoRestante() > 0) {
+        nivel.reducirTiempo(1)
+        if (nivel.tiempoRestante() == 0) {
+            nivel.aumentarVelocidad(2)
+        }
+    }})
+
+        
+        game.onTick(2000, "Aparece Meteorito",{  
+        if(nivel.generarMeteoritoDuro()){
+        if (meteoritos.size()< nivel.meteoritosRestantes()){
+        const meteorito = nivel.crearMeteorito("duro")
+        meteoritos.add(meteorito)
+        game.addVisual(meteorito)}
+    }})
+        game.onTick(3000, "Aparece Meteorito",{
+        if(nivel.generarMeteoritoVeloz()){
+        if (meteoritos.size()< nivel.meteoritosRestantes()){
+        const meteorito = nivel.crearMeteorito("veloz")
+        meteoritos.add(meteorito)
+        game.addVisual(meteorito)}
+        }})
+
+
+
+    
+    //METEORITOS ESPECIALES
+
+        
+    // Movimiento de meteoritos
+    game.onTick(53, "Cae Meteorito", {
+    var meteoritosABorrar = []
+    meteoritos.forEach({ meteorito => 
+        meteorito.mover()
+        if (meteorito.position().y() < 0) {
+            meteoritosABorrar.add(meteorito)
+        }
+    })
+    meteoritosABorrar.forEach({ meteorito =>
+        meteoritos.remove(meteorito)
+        game.removeVisual(meteorito)
+    })
+     if (nivel.contadorMunicion() == 5) {
+                    sumar_minicion.cambiarFondo("municion_activa.png")
+                    game.removeVisual(sumar_minicion)
+                    game.addVisual(sumar_minicion)
+                            }
+            if (nivel.contadorEscudo() == 10) {
+                    poner_Escudo.cambiarFondo("icono_escudo_disponible1.png")
+                    game.removeVisual(poner_Escudo)
+                    game.addVisual(poner_Escudo)
+                            }
+            if (nivel.contadorVelocidad() == 15) {
+                    reducir_velocidad.cambiarFondo("ralentizacion.png")
+                    game.removeVisual(reducir_velocidad)
+                    game.addVisual(reducir_velocidad)
+                            
+                }
+})
+
+    game.onTick(13, "Verificar Colisiones", {
+    // Listas temporales para las balas y meteoritos que deben ser eliminados
+    var balasABorrar = []
+    var meteoritosABorrar = []  
+    balas.forEach({ bala => 
+        meteoritos.forEach({ meteorito =>
+            if (meteorito.colisionaCon(bala)) {
+                balasABorrar.add(bala)
+                meteorito.recibirDisparo()
+                if(meteorito.vida()<=0){
+                meteoritosABorrar.add(meteorito)
+                nivel.eliminarMeteorito()}
+            }
+        })
+    })
+     
+    // Verificar colisiones entre meteoritos y la nave
+    meteoritos.forEach({ meteorito =>
+        if (nave.colisionaCon(meteorito)) {
+            meteoritosABorrar.add(meteorito)
+            nave.perderVida()
+
+            if (nave.vida() <= 0) {
+                game.removeVisual(meteoritos)
+                game.removeVisual(sumar_minicion)
+                game.removeVisual(poner_Escudo)
+                game.removeVisual(reducir_velocidad)
+                game.addVisual(pantallaGameOver)
+                game.stop()
+                
+    }
+            
+        }
+    })
+    // Borrar las balas que colisionaron
+    balasABorrar.forEach({ bala =>
+        balas.remove(bala)
+        game.removeVisual(bala)
+    })
+
+    // Borrar los meteoritos que colisionaron
+    meteoritosABorrar.forEach({ meteorito =>
+        meteoritos.remove(meteorito)
+        game.removeVisual(meteorito)
+    })
+    
+})
+
+    }
+    })
+    game.start()
+}
